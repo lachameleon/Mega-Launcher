@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Hehehehaw Scroll</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #fff;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .content {
+            width: 100%;
+            text-align: center;
+        }
+        .king {
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="content" id="content">
+        <!-- Initial content goes here -->
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div class="king">
+            <pre>
+   _____  
+  /     \ 
+ | () () |
+  \  ^  / 
+   |||||  
+   |||||  
+            </pre>
+        </div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div class="king">
+            <pre>
+   _____  
+  /     \ 
+ | () () |
+  \  ^  / 
+   |||||  
+   |||||  
+            </pre>
+        </div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div>hehehehaw</div>
+        <div class="king">
+            <pre>
+   _____  
+  /     \ 
+ | () () |
+  \  ^  / 
+   |||||  
+   |||||  
+            </pre>
+        </div>
+        <!-- More initial content if needed -->
+    </div>
+
+    <script>
+        const content = document.getElementById('content');
+
+        function addContent() {
+            const newContent = document.createElement('div');
+            newContent.innerHTML = `
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div class="king">
+                    <pre>
+   _____  
+  /     \ 
+ | () () |
+  \  ^  / 
+   |||||  
+   |||||  
+                    </pre>
+                </div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div class="king">
+                    <pre>
+   _____  
+  /     \ 
+ | () () |
+  \  ^  / 
+   |||||  
+   |||||  
+                    </pre>
+                </div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div>hehehehaw</div>
+                <div class="king">
+                    <pre>
+   _____  
+  /     \ 
+ | () () |
+  \  ^  / 
+   |||||  
+   |||||  
+                    </pre>
+                </div>
+            `;
+            content.appendChild(newContent);
+        }
+
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+                addContent();
+            }
+        });
+    </script>
+</body>
+</html>
