@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCII Art Generator</title>
+  <style>
+    body {
+      font-family: monospace;
+      white-space: pre;
+      text-align: center;
+    }
+    #ascii {
+      font-size: 4px;
+      line-height: 4px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>ASCII Art Generator</h1>
+  <input type="file" accept="image/*" capture="environment" id="fileInput">
+  <canvas id="canvas" style="display:none;"></canvas>
+  <pre id="ascii"></pre>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const asciiElement = document.getElementById('ascii');
+    const characters = "@%#*+=-:. ";
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const width = 80; // ASCII art width in characters
+          const aspectRatio = img.height / img.width;
+          canvas.width = width;
+          canvas.height = width * aspectRatio;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const asciiArt = convertToAscii(imageData);
+          asciiElement.textContent = asciiArt;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function convertToAscii(imageData) {
+      let asciiArt = '';
+      for (let y = 0; y < imageData.height; y++) {
+        for (let x = 0; x < imageData.width; x++) {
+          const index = (y * imageData.width + x) * 4;
+          const [r, g, b] = [
+            imageData.data[index],
+            imageData.data[index + 1],
+            imageData.data[index + 2]
+          ];
+          const gray = (r + g + b) / 3;
+          const charIndex = Math.floor((gray / 255) * (characters.length - 1));
+          asciiArt += characters[charIndex];
+        }
+        asciiArt += '\n';
+      }
+      return asciiArt;
+    }
+  </script>
+</body>
+</html>
