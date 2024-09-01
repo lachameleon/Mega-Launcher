@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Camera ASCII Art Generator</title>
+  <style>
+    body {
+      font-family: monospace;
+      white-space: pre;
+      text-align: center;
+    }
+    #ascii {
+      font-size: 4px;
+      line-height: 4px;
+      white-space: pre-wrap;
+      display: inline-block;
+    }
+    #download {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Camera ASCII Art Generator</h1>
+  <video id="video" autoplay playsinline></video>
+  <button id="capture">Capture</button>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <pre id="ascii"></pre>
+  <button id="download">Download ASCII Art</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const captureButton = document.getElementById('capture');
+    const asciiElement = document.getElementById('ascii');
+    const downloadButton = document.getElementById('download');
+    const characters = "@%#*+=-:. ";
+    
+    // Request access to the camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error("Error accessing the camera: ", err);
+      });
+
+    captureButton.addEventListener('click', () => {
+      const width = 80; // ASCII art width in characters
+      const aspectRatio = video.videoHeight / video.videoWidth;
+      canvas.width = width;
+      canvas.height = width * aspectRatio;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const asciiArt = convertToAscii(imageData);
+      asciiElement.innerHTML = asciiArt;
+    });
+
+    function convertToAscii(imageData) {
+      let asciiArt = '';
+      for (let y = 0; y < imageData.height; y++) {
+        for (let x = 0; x < imageData.width; x++) {
+          const index = (y * imageData.width + x) * 4;
+          const [r, g, b] = [
+            imageData.data[index],
+            imageData.data[index + 1],
+            imageData.data[index + 2]
+          ];
+          const gray = (r + g + b) / 3;
+          const charIndex = Math.floor((gray / 255) * (characters.length - 1));
+          const color = `rgb(${r},${g},${b})`;
+          asciiArt += `<span style="color:${color}">${characters[charIndex]}</span>`;
+        }
+        asciiArt += '<br>';
+      }
+      return asciiArt;
+    }
+
+    downloadButton.addEventListener('click', () => {
+      const blob = new Blob([asciiElement.innerHTML], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ascii-art.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
